@@ -1,0 +1,150 @@
+/* ===== 1. CSS VARIABLES: change a colour once, it updates everywhere ===== */
+:root {
+  --bg: #f2f2f2; --panel: #ffffff; --panel-2: #f7f7f7;
+  --text: #222222; --muted: #555555; --line: #cccccc;
+  --primary: #0066cc;   /* blue */
+  --accent: #2e8b57;    /* green */
+  --ok: #2e8b57; --bad: #cc0000;
+  --radius: 10px;
+  --glow: 0 3px 8px rgba(0, 0, 0, .2);
+}
+
+/* ===== 2. BOX MODEL: border-box makes width include padding + border ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ===== 3. TYPOGRAPHY + BASE (element selectors = lowest specificity) ===== */
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+body {
+  margin: 0; color: var(--text); background: var(--bg);
+  font: 1rem/1.65 "Segoe UI", system-ui, sans-serif;
+  }
+h1, h2 { line-height: 1.2; letter-spacing: -.01em; }
+h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin: 0 0 .6rem; }
+h2 { font-size: 1.5rem; margin: 0 0 .8rem; }
+a { color: var(--primary); }
+a[href^="#"]:not(.brand):not(.skip) { text-underline-offset: 4px; } /* attribute selector */
+main { max-width: 68rem; margin: 0 auto; padding: 0 1rem 3rem; }
+
+/* Visible keyboard focus (pseudo-class :focus-visible) */
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+
+.skip { position: absolute; left: -999px; background: #fff; color: #000; padding: .5rem 1rem; z-index: 100; }
+.skip:focus { left: 1rem; top: 1rem; }
+
+/* ===== 4. HEADER: position sticky + Flexbox ===== */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem;
+  padding: .7rem 1rem; background: #ffffff; border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+}
+.brand { display: inline-flex; align-items: center; gap: .5rem; font-size: 1.3rem; color: var(--text); text-decoration: none; }
+.brand b { color: var(--primary); }
+nav ul { display: flex; gap: 1.2rem; list-style: none; margin: 0; padding: 0; }
+nav a { color: var(--muted); text-decoration: none; padding: .3rem 0; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; }
+nav a:hover { color: var(--text); border-color: var(--accent); }
+.menu-btn { display: none; }
+
+/* ===== 5. BUTTONS: transitions + pseudo-classes ===== */
+.btn {
+  font: inherit; font-weight: 600; cursor: pointer; border-radius: 10px; padding: .65rem 1.1rem;
+  border: 1px solid #999999; background: var(--panel-2); color: var(--text);
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.btn:hover { transform: translateY(-2px); border-color: var(--primary); box-shadow: var(--glow); }
+.btn:active { transform: translateY(0); }
+.btn.primary { background: var(--primary); color: #fff; border: 0; }
+.btn.ghost { background: transparent; }
+.btn.chip { border-radius: 99px; }
+
+/* ===== 6. HERO: CSS Grid + 3D perspective ===== */
+.hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 2rem; align-items: center; padding: 3rem 0 2rem; }
+.hero-text p { color: var(--muted); max-width: 38rem; }
+.hero-visual { perspective: 900px; display: grid; place-items: center; }
+.rig {
+  width: min(15rem, 70%); filter: drop-shadow(0 0 28px rgba(0, 0, 0, .2));
+  transform: rotateY(-22deg) rotateX(8deg); animation: float 5s ease-in-out infinite;
+}
+@keyframes float { 50% { transform: rotateY(-12deg) rotateX(4deg) translateY(-10px); } }
+.fan { transform-box: fill-box; transform-origin: center; animation: spin 6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== 7. FORM STYLING ===== */
+form label { font-weight: 600; display: block; margin: 1rem 0 .3rem; }
+.field-row { display: flex; flex-wrap: wrap; gap: .6rem; }
+input[type="number"] {
+  flex: 1 1 12rem; font: inherit; padding: .65rem .8rem; color: var(--text);
+  background: var(--panel); border: 1.5px solid #999999; border-radius: 10px;
+}
+input[type="number"]:focus { border-color: var(--primary); }
+input:invalid:not(:placeholder-shown):not(:focus) { border-color: var(--bad); }
+fieldset.presets { border: 0; padding: 0; margin: 1rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.presets legend { float: left; margin-right: .6rem; color: var(--muted); padding: 0; }
+.help, .note, .empty { color: var(--muted); font-size: .9rem; }
+.error { color: var(--bad); min-height: 1.4rem; margin: .2rem 0 0; font-weight: 600; }
+
+/* ===== 8. PANELS (class selector: specificity 0,1,0) ===== */
+.panel {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.4rem; margin-top: 1.5rem;
+}
+.status { margin-top: 0; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1rem; margin: 1rem 0; }
+.stats div { background: var(--panel-2); border-radius: 10px; padding: .8rem 1rem; }
+.stats dt { color: var(--muted); font-size: .85rem; }
+.stats dd { margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--primary); }
+.bar { height: .8rem; background: #dddddd; border-radius: 99px; overflow: hidden; }
+#barFill { display: block; height: 100%; width: 0; background: var(--primary); transition: width .6s ease; }
+
+/* ===== 9. COMPONENT CARDS: auto-fit grid, hover 3D tilt, pseudo-element ===== */
+.parts { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; perspective: 1000px;
+         grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.part {
+  position: relative; background: var(--panel-2); border: 1px solid #cccccc; border-radius: var(--radius);
+  padding: 1.1rem; overflow: hidden; transition: transform .3s, box-shadow .3s;
+}
+.part::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--primary); }
+.part:hover { transform: translateY(-6px) rotateX(5deg); box-shadow: var(--glow); }
+.part svg { width: 2.2rem; height: 2.2rem; color: var(--primary); }
+.part h3 { margin: .4rem 0 .1rem; font-size: 1rem; }
+.part .type { color: var(--accent); font-size: .85rem; font-weight: 700; }
+.part p { margin: .2rem 0; color: var(--muted); font-size: .9rem; }
+.part .price { color: var(--text); font-weight: 700; font-size: 1.1rem; }
+
+/* ===== 10. FPS BARS ===== */
+.games { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.game { background: var(--panel-2); padding: 1rem; border-radius: var(--radius); }
+.game strong { font-size: 2rem; color: var(--ok); }
+.meter { height: .5rem; background: #dddddd; border-radius: 99px; overflow: hidden; }
+.meter span { display: block; height: 100%; background: var(--ok); transition: width .6s; }
+
+/* ===== 11. TABLE ===== */
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 34rem; }
+caption { text-align: left; color: var(--muted); padding-bottom: .5rem; }
+th, td { padding: .6rem .7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+thead th { color: var(--primary); }
+tbody tr:nth-child(even) { background: rgba(0, 0, 0, .03); }
+td.best { color: var(--ok); font-weight: 700; }
+td .btn { display: block; text-align: center; text-decoration: none; margin-top: .3rem; padding: .25rem .6rem; font-size: .8rem; }
+
+/* ===== 12. HOW IT WORKS: ordered list with counters ===== */
+.steps { padding-left: 1.2rem; }
+.steps li { margin: .5rem 0; padding-left: .3rem; }
+.steps li::marker { color: var(--primary); font-weight: 700; }
+.site-footer { text-align: center; color: var(--muted); border-top: 1px solid var(--line); padding: 1.5rem 1rem; font-size: .9rem; }
+
+/* ===== 13. RESPONSIVE DESIGN: media queries ===== */
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-visual { order: -1; }
+  .menu-btn { display: inline-block; }
+  nav { width: 100%; display: none; }
+  nav.open { display: block; }
+  nav ul { flex-direction: column; gap: .4rem; }
+}
+
+/* ===== 14. ACCESSIBILITY: respect reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

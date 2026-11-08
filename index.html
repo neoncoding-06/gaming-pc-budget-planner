@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!-- SYLLABUS: HTML document structure = doctype, html (lang), head, body -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- responsive design -->
+  <meta name="description" content="NeonRig: plan a gaming PC from your rupee budget. Demo prices and FPS for learning.">
+  <title>NeonRig PC Builder | Demo Project</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script> <!-run after the page is parsed -->
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to main content</a>
+
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="NeonRig home">
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">
+        <path d="M6 3h12v18H6z M9 7h6 M12 16h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span>Neon<b>Rig</b></span>
+    </a>
+    <button class="btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="siteNav">Menu</button>
+    <nav id="siteNav" aria-label="Main navigation">
+      <ul> <!-- list of links -->
+        <li><a href="#builder">Builder</a></li>
+        <li><a href="#parts">Components</a></li>
+        <li><a href="#games">Game FPS</a></li>
+        <li><a href="#stores">Stores</a></li>
+        <li><a href="#how">How it works</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- HERO + BUDGET FORM -->
+    <section class="hero" id="builder" aria-labelledby="heroTitle">
+      <div class="hero-text">
+        <h1 id="heroTitle">Plan your gaming PC from one number: your budget.</h1>
+        <p>Enter an amount in rupees. NeonRig picks a compatible set of parts, adds up the cost and estimates FPS. All figures are demo estimates.</p>
+
+        <form id="budgetForm" novalidate> <!-- novalidate: our JavaScript shows friendlier messages -->
+          <label for="budget">Your budget (₹)</label>
+          <div class="field-row">
+            <input id="budget" name="budget" type="number" inputmode="numeric" min="41000" max="500000" step="1"
+                   placeholder="e.g. 75000" autocomplete="off" aria-describedby="budgetHelp budgetError" required>
+            <button class="btn primary" type="submit">Build my PC</button>
+          </div>
+          <p id="budgetHelp" class="help">Supported range: ₹41,000 to ₹5,00,000.</p>
+          <p id="budgetError" class="error" role="alert"></p>
+
+          <fieldset class="presets">
+            <legend>Quick budgets</legend>
+            <!-- data-* attributes store the amount; script.js reads them -->
+            <button class="btn chip" type="button" data-budget="50000">₹50,000</button>
+            <button class="btn chip" type="button" data-budget="75000">₹75,000</button>
+            <button class="btn chip" type="button" data-budget="100000">₹1,00,000</button>
+            <button class="btn ghost" type="button" id="resetBtn">Reset</button>
+          </fieldset>
+        </form>
+      </div>
+
+      <!-- SVG illustration: scales without blur, no external image needed -->
+      <div class="hero-visual">
+        <svg class="rig" viewBox="0 0 200 240" role="img" aria-label="Illustration of a gaming PC cabinet with two glowing fans">
+          <defs>
+            <linearGradient id="neon" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#0066cc"/><stop offset="1" stop-color="#2e8b57"/>
+            </linearGradient>
+          </defs>
+          <rect x="30" y="10" width="140" height="220" rx="14" fill="#ffffff" stroke="url(#neon)" stroke-width="3"/>
+          <g class="fan"><circle cx="100" cy="72" r="32" fill="none" stroke="url(#neon)" stroke-width="2"/>
+            <path d="M100 72 L100 44 M100 72 L125 86 M100 72 L75 86" stroke="url(#neon)" stroke-width="5" stroke-linecap="round"/></g>
+          <g class="fan"><circle cx="100" cy="160" r="32" fill="none" stroke="url(#neon)" stroke-width="2"/>
+            <path d="M100 160 L100 132 M100 160 L125 174 M100 160 L75 174" stroke="url(#neon)" stroke-width="5" stroke-linecap="round"/></g>
+          <rect x="44" y="208" width="112" height="6" rx="3" fill="url(#neon)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- BUILD SUMMARY -->
+    <section class="panel" id="summary" aria-labelledby="sumTitle">
+      <h2 id="sumTitle">Build summary</h2>
+      <p id="statusMsg" class="status" role="status">Enter a budget and press “Build my PC”.</p>
+      <dl class="stats"> <!-- description list: label + value pairs -->
+        <div><dt>Selected build</dt><dd id="buildName">–</dd></div>
+        <div><dt>Estimated total</dt><dd id="totalCost">–</dd></div>
+        <div><dt>Remaining budget</dt><dd id="remaining">–</dd></div>
+      </dl>
+      <div class="bar" id="usageBar" role="progressbar" aria-label="Budget used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span id="barFill"></span>
+      </div>
+      <p id="usageText" class="help">Budget used: 0%</p> 
+    </section>
+
+    <!-- COMPONENT CARDS (filled by script.js) -->
+    <section class="panel" id="parts" aria-labelledby="partsTitle">
+      <h2 id="partsTitle">Your components</h2>
+      <p class="empty" id="partsEmpty">No build yet. Choose a budget above to see your parts.</p>
+      <ul class="parts" id="partsList"></ul>
+    </section>
+
+    <!-- GAME FPS -->
+    <section class="panel" id="games" aria-labelledby="gamesTitle">
+      <h2 id="gamesTitle">Estimated game performance</h2>
+      <p class="empty" id="gamesEmpty">FPS estimates appear after you build.</p>
+      <div class="games" id="gamesList"></div>
+      <p class="note">Demo estimates at 1080p, not measured results. Real FPS varies by resolution, settings, drivers and system configuration.</p>
+    </section>
+
+    <!-- STORE COMPARISON: a real data table with header cells -->
+    <section class="panel" id="stores" aria-labelledby="storesTitle">
+      <h2 id="storesTitle">Compare store prices</h2>
+      <p class="empty" id="storesEmpty">Store prices appear after you build.</p>
+      <div class="scroll" tabindex="0" role="region" aria-label="Store price table, scrolls sideways on small screens">
+        <table id="storeTable" hidden>
+          <caption>Demo price estimates for three online stores. Links open each store’s search page</caption>
+          <thead><tr id="storeHead"></tr></thead>
+          <tbody id="storeBody"></tbody>
+        </table>
+      </div>
+      <p class="note" id="storeNote" role="status">Prices are demo estimates. Links open each store’s search page, where the real price may differ.</p>
+    </section>
+
+    <!-- HOW IT WORKS: ordered list -->
+    <section class="panel" id="how" aria-labelledby="howTitle">
+      <h2 id="howTitle">How it works</h2>
+      <ol class="steps">
+        <li><strong>Enter a budget.</strong> JavaScript checks that it is a valid number in range.</li>
+        <li><strong>Pick a tier.</strong> A script picks the best compatible part of every type that fits your budget, then spends any leftover money on upgrades.</li>
+        <li><strong>Add it up.</strong> The script totals the part prices and subtracts them from your budget.</li>
+        <li><strong>Show results.</strong> Cards, FPS bars and the store table are created with safe DOM methods.</li>
+      </ol>
+      <!-- Multimedia-ready structure (uncomment and add your own files):
+      <figure>
+        <video controls width="480" poster="poster.jpg"><source src="demo.mp4" type="video/mp4"></video>
+        <figcaption>Screen recording of the builder.</figcaption>
+      </figure>
+      <audio controls src="click.mp3"></audio>
+      <iframe src="https://example.com" title="Embedded" loading="lazy"></iframe> -->
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>NeonRig is an educational college project. All prices and FPS figures are <strong>demo estimates</strong>, not live data and not guaranteed. Store links open real search pages, where actual prices may differ.</p>
+  </footer>
+</body>
+</html>
